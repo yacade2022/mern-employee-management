@@ -23,7 +23,7 @@ export const login = async(req,res)=>{
         throw new UnauthenticatedError('password invalid')
     }
 
-    const token = jwt.sign({userId:user._id,name:user.name},process.env.JWT_SECRET,{expiresIn:process.env.JWT_LIFETIME})
+    const token = jwt.sign({userId:user._id,name:user.name},process.env.JWT_SECRET,{expiresIn:"80d"})
 
     const oneDay = 1000 * 60 * 60 * 24
 
