@@ -1,7 +1,8 @@
-import styled from "styled-components";
 import { Form, redirect, useNavigation } from "react-router-dom";
 import customFetch from "../utils/customFetch";
 import { toast } from "react-toastify";
+import FormPageWrapper from "../components/FormPageWrapper";
+import FormRow from "../components/FormRow";
 
 export const action = async ({ request }) => {
   const formData = await request.formData();
@@ -18,92 +19,46 @@ export const action = async ({ request }) => {
 
 const Profile = () => {
   const navigation = useNavigation();
-  const isSubmitting = navigation === "submitting";
+  const isSubmitting = navigation.state === "submitting";
   return (
-    <Wrapper>
-      <div className="container">
-        <h2>profile</h2>
-        <div className="form">
-          <Form method="post">
-            <div className="input-field">
-              <label htmlFor="name">name</label>
-              <br />
-              <input type="text" id="name" name="name" />
-            </div>
-            <div className="input-field">
-              <label htmlFor="email">email</label>
-              <br />
-              <input type="email" id="email" name="email" />
-            </div>
-            <div className="input-field">
-              <label htmlFor="password">password</label>
-              <br />
-              <input type="password" id="password" name="password" />
-            </div>
-
-            <div className="btn">
-              <button type="submit" className="submit" disabled={isSubmitting}>
-                {isSubmitting ? "submitting..." : "Save changes"}
-              </button>
-            </div>
-          </Form>
-        </div>
+    <FormPageWrapper>
+      <div className="page-header">
+        <h2>Profile</h2>
+        <p>Update your account name, email and password.</p>
       </div>
-    </Wrapper>
+      <Form method="post" className="card">
+        <FormRow name="name" label="Name" autoComplete="name" required />
+        <FormRow
+          type="email"
+          name="email"
+          label="Email"
+          autoComplete="email"
+          required
+        />
+        <div className="span-2">
+          <FormRow
+            type="password"
+            name="password"
+            label="Password"
+            autoComplete="new-password"
+            minLength={6}
+            hint="At least 6 characters."
+            required
+          />
+        </div>
+        <div className="form-actions">
+          <button
+            type="submit"
+            className="btn"
+            disabled={isSubmitting}
+            aria-busy={isSubmitting}
+          >
+            {isSubmitting ? "Saving..." : "Save changes"}
+          </button>
+        </div>
+      </Form>
+    </FormPageWrapper>
   );
 };
-const Wrapper = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  .container {
-    width: 70%;
-    margin-top: 25px;
-    box-shadow: 0 0 5px black;
-    padding: 20px 0;
-    border-radius: 8px;
-  }
-  h2 {
-    text-align: center;
-    text-transform: capitalize;
-    color: #9510ca;
-  }
-  .input-field {
-    width: 90%;
-    margin: 0 auto;
-    margin-bottom: 16px;
-  }
-  label {
-    font-size: 18px;
-    font-weight: 500;
-    text-transform: capitalize;
-    color: #9510ca;
-  }
-  input {
-    width: 100%;
-    padding: 10px;
-    outline: none;
-    border: none;
-    border-radius: 4px;
-    background-color: #eaeaea;
-  }
-  .btn {
-    width: 90%;
-    margin: 0 auto;
-  }
-  .submit {
-    width: 100%;
-    display: block;
 
-    font-size: 15px;
-    font-weight: 600;
-    margin: 20px 0;
-    padding: 5px 0;
-    color: #fff;
-    background-color: #9510ca;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-`;
 export default Profile;

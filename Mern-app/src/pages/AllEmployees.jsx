@@ -4,6 +4,7 @@ import SearchContainer from "./SearchContainer";
 import AllEmployeesAdded from "./AllEmployeesAdded";
 import styled from "styled-components";
 import customFetch from "../utils/customFetch";
+import { toast } from "react-toastify";
 
 export const loader = async ({ request }) => {
   const params = Object.fromEntries([
@@ -24,15 +25,20 @@ const AllEmployees = () => {
 
   return (
     <Wrapper>
-      <div>
-        <SearchContainer allParamsValues={allParamsValues} />
-        <AllEmployeesAdded values={data} />
-      </div>
+      <SearchContainer allParamsValues={allParamsValues} />
+      <AllEmployeesAdded values={data} />
     </Wrapper>
   );
 };
 const Wrapper = styled.div`
-  width: 90%;
-  margin: 20px auto;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+  display: grid;
+  gap: 1.5rem;
+
+  @media (min-width: 768px) {
+    padding: 2rem;
+  }
 `;
 export default AllEmployees;

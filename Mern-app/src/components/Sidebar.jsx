@@ -1,200 +1,183 @@
 import React from "react";
 import styled from "styled-components";
 import { FaBorderAll, FaTimes } from "react-icons/fa";
-
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import { CgProfile } from "react-icons/cg";
 import { NavLink } from "react-router-dom";
 import { useGlobalContext } from "../pages/Dashboard";
 
+const links = [
+  { to: "/dashboard", end: true, label: "Add Employee", icon: <AiOutlineUsergroupAdd /> },
+  { to: "all-employees", label: "All Employees", icon: <FaBorderAll /> },
+  { to: "profile", label: "Profile", icon: <CgProfile /> },
+];
+
 const Sidebar = () => {
   const { showSidebar, toggleSidebar } = useGlobalContext();
+
+  // Only close the menu if it is open (mobile); on desktop it is always visible.
+  const closeSidebar = () => {
+    if (showSidebar) toggleSidebar();
+  };
+
   return (
     <Wrapper>
       <div
-        className={
-          showSidebar ? "sidebar-container hide-sidebar" : "sidebar-container"
-        }
+        className={showSidebar ? "backdrop show" : "backdrop"}
+        onClick={closeSidebar}
+        aria-hidden="true"
+      />
+      <aside
+        id="dashboard-sidebar"
+        className={showSidebar ? "sidebar-container show" : "sidebar-container"}
       >
-        <div className="content">
-          <button className="btn" onClick={() => toggleSidebar()}>
-            <FaTimes />
+        <div className="sidebar-header">
+          <span className="brand">Employees Management</span>
+          <button
+            type="button"
+            className="close-btn"
+            onClick={closeSidebar}
+            aria-label="Close menu"
+          >
+            <FaTimes aria-hidden="true" />
           </button>
-
-          <div className="links">
-            <NavLink
-              to="/dashboard"
-              end
-              className={({ isActive }) => (isActive ? "link active" : "link")}
-              onClick={() => toggleSidebar()}
-            >
-              <AiOutlineUsergroupAdd />
-              <span>Add Employee</span>
-            </NavLink>
-            <NavLink
-              to="all-employees"
-              className={({ isActive }) => (isActive ? "link active" : "link")}
-              onClick={() => toggleSidebar()}
-            >
-              <FaBorderAll />
-              <span>All Employees</span>
-            </NavLink>
-            <NavLink
-              to="profile"
-              className={({ isActive }) => (isActive ? "link active" : "link")}
-              onClick={() => toggleSidebar()}
-            >
-              <CgProfile />
-              <span>profile</span>
-            </NavLink>
-          </div>
         </div>
-      </div>
+
+        <nav aria-label="Dashboard">
+          <ul className="links">
+            {links.map(({ to, end, label, icon }) => (
+              <li key={label}>
+                <NavLink
+                  to={to}
+                  end={end}
+                  className={({ isActive }) => (isActive ? "link active" : "link")}
+                  onClick={closeSidebar}
+                >
+                  <span className="icon" aria-hidden="true">
+                    {icon}
+                  </span>
+                  <span>{label}</span>
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </aside>
     </Wrapper>
   );
 };
+
 const Wrapper = styled.div`
   .sidebar-container {
-    width: 25vw;
-    background-color: #9510ca;
+    width: var(--sidebar-width);
     min-height: 100vh;
+    background-color: var(--surface);
+    border-right: 1px solid var(--border);
+  }
+
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: var(--nav-height);
+    padding: 0 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .brand {
+    font-weight: 700;
+    color: var(--primary-600);
   }
 
   .links {
+    list-style: none;
     display: flex;
     flex-direction: column;
-    padding-top: 50px;
+    gap: 0.25rem;
+    padding: 1rem 0.75rem;
   }
   .link {
-    color: #fff;
-    padding: 10px;
-    margin-bottom: 12px;
     display: flex;
     align-items: center;
+    gap: 0.75rem;
+    min-height: 44px;
+    padding: 0.625rem 0.875rem;
+    font-weight: 500;
+    color: var(--gray-600);
     text-decoration: none;
-    transition: margin-left 0.3s ease-in-out;
-  }
-  .btn {
-    display: none;
-  }
-  .active {
-    color: yellow;
+    border-radius: var(--radius-sm);
+    transition: background-color var(--transition), color var(--transition);
   }
   .link:hover {
-    margin-left: 8px;
+    color: var(--gray-900);
+    background-color: var(--gray-100);
   }
-  span {
-    font-size: 20px;
+  .link.active {
+    color: var(--primary-700);
+    background-color: var(--primary-50);
     font-weight: 600;
-    margin-left: 5px;
   }
+  .icon {
+    display: inline-flex;
+    font-size: 1.125rem;
+  }
+
+  .close-btn {
+    display: none;
+  }
+  .backdrop {
+    display: none;
+  }
+
+  /* Mobile: off-canvas drawer */
   @media (max-width: 767px) {
     .sidebar-container {
-      height: 100vh;
-      width: 100vw;
-
-      background-color: #9510ca;
       position: fixed;
-      opacity: 1;
+      inset: 0 auto 0 0;
+      z-index: 40;
+      width: min(80vw, 300px);
+      min-height: 0;
+      height: 100%;
+      box-shadow: var(--shadow-lg);
+      transform: translateX(-100%);
+      visibility: hidden;
+      transition: transform 220ms ease, visibility 220ms;
+    }
+    .sidebar-container.show {
+      transform: translateX(0);
       visibility: visible;
-      z-index: 33;
-      inset: 0;
     }
-    .btn {
+    .backdrop {
       display: block;
-      position: absolute;
-      right: 15px;
-      top: 5px;
-      background-color: #fff;
-      color: #9510ca;
-      padding: 5px;
-      border: none;
-      border-radius: 2px;
-      font-size: 18px;
-      cursor: pointer;
-    }
-    .hide-sidebar {
+      position: fixed;
+      inset: 0;
+      z-index: 39;
+      background-color: rgba(28, 24, 35, 0.45);
       opacity: 0;
       visibility: hidden;
-      z-index: -10;
+      transition: opacity 220ms ease, visibility 220ms;
+    }
+    .backdrop.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    .close-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      margin-right: -0.5rem;
+      font-size: 1.125rem;
+      color: var(--gray-600);
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+    }
+    .close-btn:hover {
+      background-color: var(--gray-100);
     }
   }
-  /* 
-.sidebar-container{
-height: 100vh;
-width: 250px;
-margin-left: 250px;
-background-color: #9510ca;
-transition: margin-left .3s ease-in-out;
-}
-
-.show-sidebar{
-    margin-left: 0;
-
-}
-
-.sidebar{
-    position: sticky;
-    top: 0;
-}
-.btn{
-    display:none;
-}
-
-.links{
-    display: flex;
-    flex-direction: column;
-   padding-top: 50px;
-}
-.link{
-    color: #fff;
-    padding: 10px;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;    
-    text-decoration: none;
-    transition: margin-left .3s ease-in-out;
-}
-.active{
-    color: yellow;
-}
-.link:hover{
-margin-left: 8px;
-}
-span{
-    font-size: 20px;
-    font-weight: 600;
-    margin-left: 5px;
-}
-
-
-@media (max-width:767px){
-    .btn{
-    display:block;
-    position: absolute;
-    right: 5px;
-    top: 5px;
-    background-color: #fff;
-    color: #9510ca;
-    padding: 5px;
-    border: none;
-    border-radius: 2px;
-    font-size: 18px;
-}
-.sidebar-container{
-    position: fixed;
-    width: 100vw;
-    z-index: -1;
-    opacity: 0;
-    visibility: hidden;
-    transition: .5s;
-} 
-.show-sidebar{
-    z-index: 10;
-    opacity: 1;
-    visibility: visible;
-}
-} */
 `;
 
 export default Sidebar;

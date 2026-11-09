@@ -1,5 +1,5 @@
 import { HiChevronDoubleLeft, HiChevronDoubleRight } from "react-icons/hi";
-import { useLocation, Link, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const BtnContainer = ({ values }) => {
@@ -18,24 +18,30 @@ const BtnContainer = ({ values }) => {
     navigate(`${pathname}?${searchParams.toString()}`);
   };
   return (
-    <Wrapper>
+    <Wrapper aria-label="Pagination">
       <button
-        className="btn"
+        type="button"
+        className="page-btn nav-btn"
+        aria-label="Previous page"
         onClick={() => {
           let prevPage = currentPage - 1;
           if (prevPage < 1) prevPage = totalOfPages;
           handleChange(prevPage);
         }}
       >
-        <HiChevronDoubleLeft />
-        prev
+        <HiChevronDoubleLeft aria-hidden="true" />
+        <span>Prev</span>
       </button>
       <div className="btn-container">
         {numberOfBtn.map((pageNumber) => {
+          const isActive = pageNumber === currentPage;
           return (
             <button
-              className={`btn ${pageNumber === currentPage && "active"}`}
+              type="button"
+              className={isActive ? "page-btn active" : "page-btn"}
               key={pageNumber}
+              aria-label={`Page ${pageNumber}`}
+              aria-current={isActive ? "page" : undefined}
               onClick={() => handleChange(pageNumber)}
             >
               {pageNumber}
@@ -44,42 +50,68 @@ const BtnContainer = ({ values }) => {
         })}
       </div>
       <button
-        className="btn"
+        type="button"
+        className="page-btn nav-btn"
+        aria-label="Next page"
         onClick={() => {
           let nextPage = currentPage + 1;
           if (nextPage > totalOfPages) nextPage = 1;
           handleChange(nextPage);
         }}
       >
-        <HiChevronDoubleRight />
-        next
+        <span>Next</span>
+        <HiChevronDoubleRight aria-hidden="true" />
       </button>
     </Wrapper>
   );
 };
-const Wrapper = styled.div`
-  margin-top: 5px;
-  display: flex;
-  justify-content: flex-end;
-  position: relative;
 
-  .btn {
-    padding: 5px;
-    color: #fff;
-    background-color: #10cab7;
-    border: none;
-    border-radius: 2px;
-    cursor: pointer;
-  }
+const Wrapper = styled.nav`
+  margin-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+
   .btn-container {
     display: flex;
-    margin: 0 2px;
-    .btn {
-      width: 30px;
-      justify-content: center;
-    }
-    .active {
-      background-color: #9510ca;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+  .page-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 0.75rem;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--gray-700);
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background-color var(--transition), border-color var(--transition),
+      color var(--transition);
+  }
+  .page-btn:hover {
+    color: var(--primary-700);
+    background-color: var(--primary-50);
+    border-color: var(--primary-200);
+  }
+  .page-btn.active {
+    color: #fff;
+    background-color: var(--primary-500);
+    border-color: var(--primary-500);
+  }
+
+  @media (max-width: 479px) {
+    justify-content: center;
+    .nav-btn span {
+      display: none;
     }
   }
 `;

@@ -1,97 +1,99 @@
 import React from "react";
 import styled from "styled-components";
-import { Form, Link } from "react-router-dom";
+import { Form, Link, useNavigation } from "react-router-dom";
 import { JOB_CATEGORY } from "../../../utils/constants";
+import FormRow from "../components/FormRow";
+import FormRowSelect from "../components/FormRowSelect";
 
 const SearchContainer = ({ allParamsValues }) => {
   const { search, category, sort } = allParamsValues;
+  const navigation = useNavigation();
+  const isLoading = navigation.state === "loading";
 
   return (
-    <Wrapper>
-      <Form className="container">
-        <div className="input">
-          <div className="input-field">
-            <label htmlFor="name">search</label>
-            <input
-              type="search"
-              id="name"
-              name="search"
-              defaultValue={search}
-            />
-          </div>
-          <div className="input-field">
-            <label htmlFor="category">category</label>
-            <select name="category" id="category" defaultValue={category}>
-              <option>all</option>
-              <option>{JOB_CATEGORY.FRONT}</option>
-              <option>{JOB_CATEGORY.BACK}</option>
-              <option>{JOB_CATEGORY.FULL}</option>
-            </select>
-          </div>
-          <div className="input-field">
-            <label htmlFor="sort">sort</label>
-            <select name="sort" id="sort" defaultValue={sort}>
-              <option>newest</option>
-              <option>low_salary</option>
-              <option> high_salary</option>
+    <Wrapper className="card">
+      <Form role="search" aria-label="Filter employees">
+        <h2 className="title">Search employees</h2>
+        <div className="fields">
+          <FormRow
+            type="search"
+            id="name"
+            name="search"
+            label="Search"
+            placeholder="Name..."
+            defaultValue={search}
+          />
+          <FormRowSelect
+            name="category"
+            label="Category"
+            defaultValue={category}
+            options={["all", ...Object.values(JOB_CATEGORY)]}
+          />
+          <div className="form-row">
+            <label htmlFor="sort" className="form-label">
+              Sort
+            </label>
+            <select
+              name="sort"
+              id="sort"
+              className="form-select"
+              defaultValue={sort}
+            >
+              <option value="newest">Newest</option>
+              <option value="low_salary">Salary: low to high</option>
+              <option value="high_salary">Salary: high to low</option>
             </select>
           </div>
         </div>
-        <div>
-          <Link to="/dashboard/all-employees" className="link">
-            reset all values
+        <div className="actions">
+          <Link to="/dashboard/all-employees" className="btn btn-outline">
+            Reset all values
           </Link>
-          <button type="submit" className="btn">
-            submit
+          <button
+            type="submit"
+            className="btn"
+            disabled={isLoading}
+            aria-busy={isLoading}
+          >
+            {isLoading ? "Searching..." : "Search"}
           </button>
         </div>
       </Form>
     </Wrapper>
   );
 };
-const Wrapper = styled.div`
-  .input {
+
+const Wrapper = styled.section`
+  padding: 1.25rem;
+
+  .title {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  .fields {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 10px;
-    margin-bottom: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
   }
-  .input-field {
+  .form-select {
+    text-transform: capitalize;
+  }
+  .actions {
     display: flex;
-    flex-direction: column;
-  }
-  .input-field label {
-    margin-bottom: 10px;
-    color: #9510ca;
-    text-transform: capitalize;
-  }
-  input,
-  select {
-    outline: none;
-    padding: 5px;
-    border: none;
-    border: 1px solid #9510ca;
-    border-radius: 4px;
-    color: #9510ca;
-  }
-  .btn,
-  .link {
-    color: #fff;
-    background-color: #9510ca;
-    border: none;
-    border-radius: 4px;
-    text-transform: capitalize;
-    text-align: center;
-    cursor: pointer;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
   }
 
-  .btn {
-    padding: 4px;
-    margin-left: 10px;
+  @media (min-width: 768px) {
+    padding: 1.5rem;
   }
-  .link {
-    padding: 3px;
-    text-decoration: none;
+  @media (max-width: 479px) {
+    .actions .btn {
+      flex: 1;
+    }
   }
 `;
 export default SearchContainer;

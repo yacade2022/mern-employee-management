@@ -28,7 +28,6 @@ const Dashboard = () => {
   };
 
   const toggleSidebar = () => {
-    console.log(showSidebar);
     setShowSidebar(!showSidebar);
   };
 
@@ -48,7 +47,9 @@ const Dashboard = () => {
 
           <div className="second-column">
             <Navbar data={data} />
-            <Outlet />
+            <main>
+              <Outlet />
+            </main>
           </div>
         </div>
       </Wrapper>
@@ -62,6 +63,13 @@ const Wrapper = styled.div`
     display: grid;
     align-items: start;
     grid-template-columns: 1fr;
+    min-height: 100vh;
+  }
+  .second-column {
+    min-width: 0;
+  }
+  main {
+    padding-bottom: 3rem;
   }
 
   @media (min-width: 768px) {

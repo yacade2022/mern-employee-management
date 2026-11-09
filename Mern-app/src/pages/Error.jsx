@@ -1,39 +1,50 @@
-import { Link, useRouteError } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const Error = () => {
   return (
     <Wrapper>
       <div className="container">
-        <h1>Error 404</h1>
-        <h2>Page not found</h2>
-        <p>Sorry we can't find the page you are looking for</p>
-        <Link to="/dashboard" className="back-home">
-          back home
+        <p className="code">Error 404</p>
+        <h1>Page not found</h1>
+        <p className="message">
+          Sorry, we can&apos;t find the page you are looking for.
+        </p>
+        <Link to="/dashboard" className="btn">
+          Back home
         </Link>
       </div>
     </Wrapper>
   );
 };
-const Wrapper = styled.div`
-  width: 100%;
-  height: 100vh;
+const Wrapper = styled.main`
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem 1rem;
+
   .container {
-    width: 50%;
-    margin: 30px auto;
+    max-width: 480px;
     text-align: center;
   }
-  h2,
+  .code {
+    display: inline-block;
+    margin-bottom: 1rem;
+    padding: 0.25rem 0.75rem;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--primary-700);
+    background-color: var(--primary-50);
+    border-radius: 999px;
+  }
   h1 {
-    color: #9510ca;
-    margin-bottom: 10px;
+    font-size: var(--text-3xl);
+    font-weight: 800;
+    margin-bottom: 0.75rem;
   }
-  p {
-    line-height: 2;
-    margin-bottom: 10px;
-  }
-  .back-home {
-    font-size: 20px;
+  .message {
+    color: var(--text-muted);
+    margin-bottom: 2rem;
   }
 `;
 export default Error;
