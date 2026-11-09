@@ -30,12 +30,32 @@ if(process.env.NODE_ENV === 'development'){
 app.use(express.static(path.resolve(__dirname, './public')));
 
 app.set('trust proxy', 1)
-app.use(
-    rateLimiter({
-        windowMs: 20 * 60 * 1000,
-        max:60
-    })
-)
+
+// Rate limits apply to the API only, so page loads and static files don't count.
+// Responses use the same { msg } JSON shape as the rest of the API.
+const limitMessage = { msg: 'Too many requests, please try again later.' }
+
+// General API traffic.
+const apiLimiter = rateLimiter({
+    windowMs: 15 * 60 * 1000,
+    max: 300,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: limitMessage
+})
+
+// Stricter limit on login/register to slow down password guessing.
+const authLimiter = rateLimiter({
+    windowMs: 15 * 60 * 1000,
+    max: 20,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { msg: 'Too many login attempts, please try again in 15 minutes.' }
+})
+
+app.use('/api', apiLimiter)
+app.use('/api/v1/auth/login', authLimiter)
+app.use('/api/v1/auth/register', authLimiter)
 app.use(helmet())
 app.use(cors())
 app.use(xss())

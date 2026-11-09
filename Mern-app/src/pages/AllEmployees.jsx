@@ -4,6 +4,7 @@ import SearchContainer from "./SearchContainer";
 import AllEmployeesAdded from "./AllEmployeesAdded";
 import styled from "styled-components";
 import customFetch from "../utils/customFetch";
+import getErrorMessage from "../utils/getErrorMessage";
 import { toast } from "react-toastify";
 
 export const loader = async ({ request }) => {
@@ -15,7 +16,7 @@ export const loader = async ({ request }) => {
     const { data } = await customFetch.get("/employee", { params });
     return { data, allParamsValues: { ...params } };
   } catch (error) {
-    toast.error(error?.response?.data?.msg);
+    toast.error(getErrorMessage(error));
     return error;
   }
 };

@@ -7,6 +7,7 @@ import {
   useNavigation,
 } from "react-router-dom";
 import customFetch from "../utils/customFetch";
+import getErrorMessage from "../utils/getErrorMessage";
 import { toast } from "react-toastify";
 import { JOB_CATEGORY } from "../../../utils/constants";
 import FormPageWrapper from "../components/FormPageWrapper";
@@ -18,7 +19,7 @@ export const loader = async ({ params }) => {
     const { data } = await customFetch.get(`/employee/${params.id}`);
     return data;
   } catch (error) {
-    toast.error(error?.response?.data?.msg);
+    toast.error(getErrorMessage(error));
     return redirect("/dashboard/all-employees");
   }
 };
@@ -32,7 +33,7 @@ export const action = async ({ request, params }) => {
     toast.success("Employee Updated");
     return redirect("/dashboard/all-employees");
   } catch (error) {
-    toast.error(error?.response?.data?.msg);
+    toast.error(getErrorMessage(error));
     return redirect("/dashboard/all-employees");
   }
 };

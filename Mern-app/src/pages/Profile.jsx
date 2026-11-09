@@ -1,5 +1,6 @@
 import { Form, redirect, useNavigation } from "react-router-dom";
 import customFetch from "../utils/customFetch";
+import getErrorMessage from "../utils/getErrorMessage";
 import { toast } from "react-toastify";
 import FormPageWrapper from "../components/FormPageWrapper";
 import FormRow from "../components/FormRow";
@@ -12,7 +13,7 @@ export const action = async ({ request }) => {
     await customFetch.patch("/users/update-user", data);
     toast.success("User Updated");
   } catch (error) {
-    toast.error(error?.response?.data?.msg);
+    toast.error(getErrorMessage(error));
   }
   return redirect("/dashboard");
 };

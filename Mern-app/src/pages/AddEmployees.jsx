@@ -1,6 +1,7 @@
 import { Form, redirect, useNavigation } from "react-router-dom";
 import { JOB_CATEGORY } from "../../../utils/constants";
 import customFetch from "../utils/customFetch";
+import getErrorMessage from "../utils/getErrorMessage";
 import { toast } from "react-toastify";
 import FormPageWrapper from "../components/FormPageWrapper";
 import FormRow from "../components/FormRow";
@@ -15,7 +16,7 @@ export const action = async ({ request }) => {
     toast.success("Employee Added");
     return redirect("all-employees");
   } catch (error) {
-    toast.error(error?.response?.data?.msg);
+    toast.error(getErrorMessage(error));
     return error;
   }
 };

@@ -1,6 +1,7 @@
 import React from "react";
 import { Form, redirect, useNavigation, Link } from "react-router-dom";
 import customFetch from "../utils/customFetch";
+import getErrorMessage from "../utils/getErrorMessage";
 import { toast } from "react-toastify";
 import AuthWrapper from "../components/AuthWrapper";
 import FormRow from "../components/FormRow";
@@ -14,7 +15,7 @@ export const action = async ({ request }) => {
     toast.success("Registration Successful");
     return redirect("/login");
   } catch (error) {
-    toast.error(error?.response?.data?.msg);
+    toast.error(getErrorMessage(error));
     return error;
   }
 };
