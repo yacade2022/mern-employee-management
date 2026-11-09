@@ -83,7 +83,16 @@ const AllEmployeesAdded = ({ values }) => {
                   >
                     Edit
                   </Link>
-                  <Form method="post" action={`../delete/${element._id}`}>
+                  <Form
+                    method="post"
+                    action={`../delete/${element._id}`}
+                    onSubmit={(event) => {
+                      const confirmed = window.confirm(
+                        `Delete ${element.name}? This cannot be undone.`
+                      );
+                      if (!confirmed) event.preventDefault();
+                    }}
+                  >
                     <button
                       type="submit"
                       className="btn btn-danger btn-sm"
